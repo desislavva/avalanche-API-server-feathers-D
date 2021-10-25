@@ -1,0 +1,252 @@
+openapi: '3.0.0'
+info: {
+ title: 'Avalanche server API',
+ version: '1.0.0',
+ description: 'Avalanche Api for interacting with node'
+}
+
+
+paths:
+ /address/hash/{hash}:
+  get:
+   summary: get block by number
+   tags:
+   - Addresses
+   description: GET address info by hash
+   parameters:
+   - in: path
+     name: hash
+     schema:
+       type: string
+     required: true
+     description: hash of address
+     example: 'X-avax1l3gec03n5qrp6cwhnt4syx6wnn8pee6r87elu2'
+   responses:
+    200:
+     description: Address details 
+     content:
+      application/josn:
+       schema: 
+        type: array
+    500:
+     description: failure fetching address details
+ 
+ /blocks/hash/{hash}:
+  get:
+   summary: get block by hash
+   tags:
+   - Blocks
+   description: get single block providing hash
+   parameters:
+   - in: path
+     name: hash
+     schema:
+      type: string
+     required: true
+     description: number of block
+     example: '0x0bcd0c4e5635f21dd4352aa82692a5e29bcf2c5373da9427e5ab38bd4c7cfd33'
+   responses:
+    200:
+     description: Block details
+     content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - result
+          properties:
+           result:
+            type: object
+    500:
+     description: failure fetching the block
+ 
+ /blocks/number/{blockNumber}:
+  get:
+   summary: get block by number
+   tags:
+   - Blocks
+   description: get single block providing number
+   parameters:
+   - in: path
+     name: blockNumber
+     schema:
+      type: integer
+     required: true
+     description: number of block
+     example: 1940150
+   responses:
+    200:
+     description: Block details
+     content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - result
+          properties:
+           result:
+            type: object
+    500:
+     description: failure fetching the block   
+
+ /network:
+  get:
+   summary: get network info
+   tags:
+   - Network
+   description: Network
+   responses:
+    200:
+     description: Network info
+     content:
+      application/json:
+        schema:
+          type: array
+          required:
+            - stringProperty
+            - integerProperty
+            - integerProperty1
+            - stringProperty1
+          properties:
+            stringProperty:
+              type: string
+            integerProperty:
+              type: integer
+            stringProperty1:
+              type: string
+            integerProperty1:
+              type: integer
+    500:
+     description: failure fetching network
+
+ /transactions/{n}/{x}:
+  get:
+   summary: get x transactions after N-th
+   tags:
+    - Transactions
+   description: get transaction
+   parameters:
+    - in: path
+      name: n
+      schema:
+       type: integer
+      required: true
+      description: transactions 
+      example: 1
+    - in: path
+      name: x
+      schema:
+       type: integer
+      required: true
+      description: X transactions after N-th
+      example: 2
+   responses:
+    200:
+     description: Transaction
+     content:
+      application/json:
+        schema:
+          type: array
+    500:
+     description: failure fetching transactions
+
+ /transactions/hash/{hash}:
+  get:
+   summary: get transaction by hash
+   tags:
+   - Transactions
+   description: get transaction providing hash
+   parameters:
+   - in: path
+     name: hash
+     schema:
+      type: string
+     required: true
+     description: hash of transaction
+     example: '0x118e1747566adeaab6afede9de76ebeb5b10bb56ec510a099fb5a82221e9d0e7'
+   responses:
+    200:
+     description: Transaction details
+     content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - result
+          properties:
+           result:
+            type: object
+    500:
+     description: failure fetching the block   
+
+ /transactions/{address}/{n}/{x}:
+  get:
+   summary: get transaction by hash
+   tags:
+   - Transactions
+   description: get transactions of address
+   parameters:
+   - in: path
+     name: address
+     schema:
+      type: string
+     required: true
+     description: hash of transaction
+     example: 'X-avax1l3gec03n5qrp6cwhnt4syx6wnn8pee6r87elu2'
+   - in: path
+     name: n
+     schema:
+      type: integer
+     required: true
+     description: To provide a number first make sure that the address has transactions
+     example: 5
+   - in: path
+     name: x
+     schema:
+      type: integer
+     required: true
+     description: X transactions after N-th
+     example: 10
+   responses:
+    200:
+     description: Transactions of address
+     content:
+      application/json:
+        schema:
+          type: array
+    500:
+     description: failure fetching transactions
+
+
+
+ /transactions/recentxchain:
+  get:
+   summary: get recent transactions from X-chain
+   tags:
+    - Transactions
+   description: recent transactions from X-chain
+   responses:
+    200:
+     description: Recent transactions
+     content:
+      application/json:
+        schema:
+          type: object
+    500:
+     description: failure fetching transactions
+
+ /transactions/recentpchain:
+  get:
+   summary: get recent transactions from P-chain
+   tags:
+    - Transactions
+   description: recent transactions from P-chain
+   responses:
+    200:
+     description: Recent transactions
+     content:
+      application/json:
+        schema:
+          type: object
+    500:
+     description: failure fetching transactions

@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
 const logger = require('./logger');
 const app = require('./app');
-const axios = require('axios');
-
 
 const dotenv = require('dotenv');
 dotenv.config();
+
 const port = process.env.SERVER_PORT;
 
 const server = app.listen(port);

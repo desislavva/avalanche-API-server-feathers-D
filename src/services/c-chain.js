@@ -185,4 +185,4 @@ exports.getXPendingTransactionsAfterNthFromCChain = async (n, x) => {
   });
     
   return result;
-}
+};

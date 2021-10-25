@@ -75,7 +75,7 @@ exports.getAddressInfoByHashFromXChain = async (address) => {
 };
 
 //GET X transaction from address after N-th transaction
-exports.getXTransactionsAfterNthFromAddressFromXChain = async (address, n, x) => {
+exports.getXTransactionsAfterNthFromAddressFromXChain = async (address) => {
   let response;
 
   try {

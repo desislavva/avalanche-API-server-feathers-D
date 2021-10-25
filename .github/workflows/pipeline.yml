@@ -1,0 +1,96 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Setup env file
+      run: |
+        ouch .env
+        echo SERVER_PORT=${{secrets.SERVER_PORT}} >> .env
+        echo SERVER_ADDRESS=${{secrets.SERVER_ADDRESS}} >> .env
+        echo WEBSOCKET_PORT=${{secrets.WEBSOCKET_PORT}} >> .env
+        echo C_CHAIN_BC_CLIENT_BLOCK_ENDPOINT="${{secrets.C_CHAIN_BC_CLIENT_BLOCK_ENDPOINT}}" >> .env
+        echo X_CHAIN_BC_CLIENT_BLOCK_ENDPOINT="${{secrets.X_CHAIN_BC_CLIENT_BLOCK_ENDPOINT}}" >> .env
+        echo P_CHAIN_BC_CLIENT_BLOCK_ENDPOINT="${{secrets.P_CHAIN_BC_CLIENT_BLOCK_ENDPOINT}}" >> .env
+        echo X_CHAIN_ID="${{secrets.X_CHAIN_ID}}" >> .env
+        echo P_CHAIN_ID="${{secrets.P_CHAIN_ID}}" >> .env
+        echo C_CHAIN_ID="${{secrets.C_CHAIN_ID}}" >> .env
+        echo ORTELIUS_API_ENDPOINT="${{secrets.ORTELIUS_API_ENDPOINT}}" >> .env
+        cat .env
+    - name: Install libraries
+      run:
+        npm install
+      
+    - name: Start server
+      run:
+        node src/ &
+
+    - name: Run tests
+      run: |
+        npm ci
+        npm run build --if-present
+        npm test
+  
+  release:
+    needs: build
+    
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Setup env file
+      run: |
+        touch .env
+        echo C_CHAIN_BC_CLIENT_BLOCK_ENDPOINT="http://localhost:9650/ext/bc/C/rpc" >> .env
+        echo X_CHAIN_BC_CLIENT_BLOCK_ENDPOINT="http://localhost:9650/ext/bc/X" >> .env
+        echo P_CHAIN_BC_CLIENT_BLOCK_ENDPOINT="http://localhost:9650/ext/bc/P" >> .env
+        echo X_CHAIN_ID="${{secrets.X_CHAIN_ID}}" >> .env
+        echo P_CHAIN_ID="${{secrets.P_CHAIN_ID}}" >> .env
+        echo C_CHAIN_ID="${{secrets.C_CHAIN_ID}}" >> .env
+        echo ORTELIUS_API_ENDPOINT="http://localhost:8080/v2/" >> .env
+        cat .env
+    
+    - name: Docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/avalanche-api-server-feathers
+      
+    - name: Docker push
+      run: docker push ${{secrets.DOCKER_USER}}/avalanche-api-server-feathers
