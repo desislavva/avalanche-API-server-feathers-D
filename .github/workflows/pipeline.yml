@@ -26,7 +26,7 @@ jobs:
     
     - name: Setup env file
       run: |
-        ouch .env
+        touch .env
         echo SERVER_PORT=${{secrets.SERVER_PORT}} >> .env
         echo SERVER_ADDRESS=${{secrets.SERVER_ADDRESS}} >> .env
         echo WEBSOCKET_PORT=${{secrets.WEBSOCKET_PORT}} >> .env
