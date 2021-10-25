@@ -2,6 +2,12 @@ const dotenv = require('dotenv');
 
 const axios = require('axios');
 
+
+const cChainMethods = require('../services/c-chain')
+const pChainMethods = require('../services/p-chain')
+const xChainMethods = require('../services/x-chain')
+
+
 dotenv.config();
 
 
@@ -118,14 +124,55 @@ dotenv.config();
     /////////////////////////// BLOCKS //////////////////////////////////
     
     app.get('/blocks/hash/:hash', async function (req, res) {
-   
-  })
-    app.get('/blocks/number/:blocknumber', async function (req, res) {
-   
+
+      const blockFromCChain = await cChainMethods.getBlockByHashFromCChain(
+        req.params.hash
+      )
+    
+      if (blockFromCChain[0] == 1) {
+        res.send(blockFromCChain[1])
+      }
+      res.send(blockFromCChain[1])
+    
     })
 
+
+    app.get('/blocks/number/:blocknumber', async function (req, res) {
+
+      const cChainNumber = await cChainMethods.getBlockByNumberFromCChain(
+        req.params.blocknumber
+      )
+    
+      if (cChainNumber[0] == 1) {
+        res.send(cChainNumber[1])
+      }
+      res.send(cChainNumber[0])
+    
+    })
+
+
+
     app.get('/blocks/numbers/:blocknumber/:count', async function (req, res) {
-   
+
+      const cChainArray = []
+      let k = 0
+
+      const blockNumber = req.params.blocknumber
+      const count = req.params.count
+
+      for (let i = blockNumber - count; i < blockNumber; ++i) {
+        let hashValue = await cChainMethods.getBlockByNumberFromCChain(i)
+
+        if (hashValue[0] == 1) {
+          return hashValue[1]
+        } else {
+          cChainArray[k] = hashValue[1]
+          k++
+        }
+      }
+
+      res.send(cChainArray)
+      
   })
 
   
