@@ -1,4 +1,4 @@
-# feathers-avalanche-api
+# Feathers-avalanche-api
 
 > Avalanche API server using Feathers
 
