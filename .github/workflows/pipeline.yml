@@ -84,13 +84,13 @@ jobs:
     
     - name: Docker login
       env:
-        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: |
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/avalanche-api-server-feathers
+      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USERNAME}}/avalanche-api-server-feathers
       
     - name: Docker push
-      run: docker push ${{secrets.DOCKER_USER}}/avalanche-api-server-feathers
+      run: docker push ${{secrets.DOCKER_USERNAME}}/avalanche-api-server-feathers
