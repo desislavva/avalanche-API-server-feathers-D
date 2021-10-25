@@ -5,9 +5,12 @@ const app = require('./app');
 const dotenv = require('dotenv');
 dotenv.config();
 
+const websocketServer = require('./websocket');
+
 const port = process.env.SERVER_PORT;
 
 const server = app.listen(port);
+
 
 process.on('unhandledRejection', (reason, p) =>
   logger.error('Unhandled Rejection at: Promise ', p, reason)

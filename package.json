@@ -50,7 +50,9 @@
     "jest-openapi": "^0.14.1",
     "serve-favicon": "^2.5.0",
     "web3-utils": "^1.6.0",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "wm": "^1.2.2",
+    "ws": "^8.2.3"
   },
   "devDependencies": {
     "axios": "^0.23.0",

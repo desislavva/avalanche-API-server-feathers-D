@@ -16,7 +16,10 @@ const services = require('./services');
 const appHooks = require('./app.hooks');
 const channels = require('./channels');
 
+const swagger = require('feathers-swagger')
+
 const app = express(feathers());
+
 
 // Load app configuration
 app.configure(configuration());
